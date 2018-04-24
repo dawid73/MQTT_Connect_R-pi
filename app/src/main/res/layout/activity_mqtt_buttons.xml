@@ -125,12 +125,12 @@
 
     <Button
         android:id="@+id/btn_test_subsribe"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="170dp"
+        android:layout_height="70dp"
         android:layout_marginLeft="30dp"
         android:layout_marginStart="30dp"
         android:layout_marginTop="23dp"
-        android:text="Button"
+        android:text="Subskrybuj"
         app:layout_constraintStart_toStartOf="@+id/btn_domofon_door"
         app:layout_constraintTop_toBottomOf="@+id/btn_domofon_door" />
 
