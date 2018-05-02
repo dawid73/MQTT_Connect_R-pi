@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 import org.eclipse.paho.android.service.MqttAndroidClient;
 import org.eclipse.paho.client.mqttv3.MqttException;
@@ -19,9 +20,8 @@ public class MqttButtons extends AppCompatActivity {
     private String TAG = "MqttButtons";
     private PahoMqttClient pahoMqttClient;
 
-    private Button pin11_0_btn, pin12_0_btn, pin11_1_btn, pin12_1_btn, alarm_on_btn, domofon_open_btn;
+    private Button pin11_0_btn, pin12_0_btn, pin11_1_btn, pin12_1_btn, alarm_on_btn, domofon_open_btn, wol_lenovo_btn, subskrybuj_btn;
 
-    private Button btn_test_subscribe;
 
     String brokerUrl, username, password, clientId;
 
@@ -52,7 +52,9 @@ public class MqttButtons extends AppCompatActivity {
 
         domofon_open_btn = (Button) findViewById(R.id.btn_domofon_door);
 
-        btn_test_subscribe = (Button) findViewById(R.id.btn_test_subsribe);
+        subskrybuj_btn = (Button) findViewById(R.id.btn_subskrybuj);
+
+        wol_lenovo_btn = (Button) findViewById(R.id.btn_wol_lenovo);
 
 
         client = pahoMqttClient.getMqttClient(getApplicationContext(), brokerUrl, clientId, username, password);
@@ -67,14 +69,18 @@ public class MqttButtons extends AppCompatActivity {
 //
 
 
-        btn_test_subscribe.setOnClickListener(new View.OnClickListener() {
+        subskrybuj_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String topic = "dev/alarm".trim();
                 if (!topic.isEmpty()) {
                     try {
                         pahoMqttClient.subscribe(client, topic, 1);
+                        Toast.makeText(MqttButtons.this, "Subsrybcja włączona poprawnie",
+                                Toast.LENGTH_LONG).show();
                     } catch (MqttException e) {
+                        Toast.makeText(MqttButtons.this, "Błąd przy włączeniu subsrypcji",
+                                Toast.LENGTH_LONG).show();
                         e.printStackTrace();
                     }
                 }
@@ -144,6 +150,22 @@ public class MqttButtons extends AppCompatActivity {
             }
         });
 
+        wol_lenovo_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String msg = "1";
+                try {
+                    pahoMqttClient.publishMessage(client, msg, 1, "dev/wol_pc");
+                    Toast.makeText(MqttButtons.this, "Wysłano pakiet WOL do Lenovo",
+                            Toast.LENGTH_LONG).show();
+                } catch (MqttException e) {
+                    e.printStackTrace();
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
 
         alarm_on_btn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -152,12 +174,16 @@ public class MqttButtons extends AppCompatActivity {
                 String msg0 = "0";
                 try {
                     pahoMqttClient.publishMessage(client, msg0, 1, "dev/pin13");
+                    Toast.makeText(MqttButtons.this, "PIN 13 - ON ",
+                            Toast.LENGTH_SHORT).show();
                     try {
-                        Thread.sleep(1500);
+                        Thread.sleep(1000);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
                     pahoMqttClient.publishMessage(client, msg1, 1, "dev/pin13");
+                    Toast.makeText(MqttButtons.this, "PIN 13 - OFF ",
+                            Toast.LENGTH_SHORT).show();
                 } catch (MqttException e) {
                     e.printStackTrace();
                 } catch (UnsupportedEncodingException e) {
@@ -173,12 +199,16 @@ public class MqttButtons extends AppCompatActivity {
                 String msg0 = "0";
                 try {
                     pahoMqttClient.publishMessage(client, msg0, 1, "dev/pin15");
+                    Toast.makeText(MqttButtons.this, "PIN 15 - ON ",
+                            Toast.LENGTH_SHORT).show();
                     try {
-                        Thread.sleep(1500);
+                        Thread.sleep(500);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
                     pahoMqttClient.publishMessage(client, msg1, 1, "dev/pin15");
+                    Toast.makeText(MqttButtons.this, "PIN 15 - OFF ",
+                            Toast.LENGTH_SHORT).show();
                 } catch (MqttException e) {
                     e.printStackTrace();
                 } catch (UnsupportedEncodingException e) {
